@@ -1,0 +1,686 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onigiri Mission - Bright Edition</title>
+<style>
+:root{
+ --blue:#4361ee;
+ --cyan:#00c9c8;
+ --pink:#ff6392;
+ --yellow:#ffcb45;
+ --green:#22c98a;
+ --orange:#ff9855;
+ --bg:#f1f7ff;
+ --dark:#18254b;
+ --muted:#667596;
+ --white:#fff;
+ --border:#e1eaff;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Inter,system-ui,Arial,sans-serif;
+ color:var(--dark);
+ min-height:100vh;
+ background:
+ radial-gradient(circle at 5% 5%,#b8f4f0 0,transparent 28%),
+ radial-gradient(circle at 95% 20%,#ffd9e8 0,transparent 28%),
+ radial-gradient(circle at 50% 100%,#fff0bd 0,transparent 30%),
+ var(--bg);
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.wrapper{max-width:850px;margin:auto;padding:22px 17px 35px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.brand{font-size:12px;letter-spacing:2px;color:var(--blue);font-weight:900}
+.sound{
+ border:1px solid #dce5fa;background:white;color:var(--blue);
+ border-radius:30px;padding:10px 14px;font-size:12px;font-weight:800;
+ box-shadow:0 4px 12px #233b7310;
+}
+.hero{text-align:center;padding:30px 10px 24px}
+.emoji{font-size:72px;filter:drop-shadow(0 8px 12px #f5a83c50)}
+.eyebrow{color:var(--blue);font-size:12px;letter-spacing:3px;font-weight:900}
+h1{font-size:clamp(32px,7vw,50px);line-height:1.08;margin:12px 0;color:var(--dark)}
+h1 span{color:var(--pink)}
+.subtitle{color:var(--muted);font-size:14px;line-height:1.7}
+.panel{
+ background:rgba(255,255,255,.94);
+ border:1px solid white;border-radius:23px;padding:23px;
+ box-shadow:0 12px 35px #526ca51a;
+}
+.section-title{font-size:20px;font-weight:900;margin:0 0 7px}
+.small{color:var(--muted);font-size:13px;line-height:1.7}
+.field{margin-top:17px}
+label{display:block;font-size:12px;color:#526384;margin-bottom:7px;font-weight:800}
+input{
+ width:100%;background:#f5f8ff;color:var(--dark);
+ border:1.5px solid #dce5fa;border-radius:12px;
+ padding:14px;outline:none;
+}
+input:focus{border-color:var(--blue);background:white}
+.btn{
+ border:0;border-radius:13px;padding:14px 20px;
+ font-weight:900;color:white;
+ background:linear-gradient(100deg,var(--blue),#7388ff);
+ box-shadow:0 6px 16px #4361ee35;
+ transition:.2s;
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.04)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.secondary{background:#eef3ff;color:var(--blue);border:1px solid #dce5fa;box-shadow:none}
+.btn.pink{background:linear-gradient(100deg,var(--pink),#ff94b5)}
+.btn.yellow{background:linear-gradient(100deg,var(--yellow),#ffe28d);color:#694600}
+.full{width:100%;margin-top:20px}
+.why{
+ margin:18px 0;padding:16px;border-radius:15px;
+ background:#fff7df;border:1px solid #ffe3a0;
+ color:#77520c;font-size:13px;line-height:1.7;
+}
+.rules{padding-left:20px;color:#526384;font-size:13px;line-height:2}
+.footer{text-align:center;color:#8794af;font-size:11px;margin-top:30px}
+.hidden{display:none!important}
+.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.stat{
+ background:white;border:1px solid var(--border);
+ border-radius:15px;padding:13px;text-align:center;
+ box-shadow:0 5px 15px #526ca510;
+}
+.stat strong{display:block;font-size:23px;color:var(--blue)}
+.stat span{font-size:10px;color:var(--muted);letter-spacing:1px;font-weight:800}
+.progress-wrap{margin:17px 0 22px}
+.progress-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;color:#526384;font-weight:800}
+.progress{height:12px;border-radius:20px;background:#dfe8fb;overflow:hidden}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--pink));transition:width .4s;border-radius:20px}
+.level{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
+.level-tag{background:#e5fafa;color:#008d91;padding:8px 12px;border-radius:30px;font-size:11px;font-weight:900}
+.q-number{color:var(--muted);font-size:12px;font-weight:800}
+.question{font-size:21px;font-weight:900;line-height:1.45;margin:10px 0;color:var(--dark)}
+.hint{
+ background:#fff7df;border-left:4px solid var(--yellow);
+ padding:12px 14px;color:#76520d;font-size:12px;
+ line-height:1.7;border-radius:0 12px 12px 0;margin:15px 0;
+}
+.instruction{font-size:12px;color:var(--muted);margin-bottom:13px;font-weight:800}
+.sort-list{display:flex;flex-direction:column;gap:9px}
+.sort-item{
+ display:flex;align-items:center;gap:10px;padding:13px;
+ border-radius:14px;background:#f3f7ff;
+ border:1.5px solid #dce6fa;cursor:grab;user-select:none;
+ min-height:58px;touch-action:pan-y;
+}
+.sort-item:nth-child(even){background:#f1fcfa;border-color:#d1f1ec}
+.sort-item.dragging{opacity:.35;border:1px dashed var(--blue)}
+.sort-item.over{border:2px solid var(--cyan);background:#e1fbf8}
+.num{
+ min-width:29px;height:29px;border-radius:9px;
+ display:grid;place-items:center;background:var(--blue);color:white;
+ font-size:12px;font-weight:900;
+}
+.item-text{flex:1;font-size:13px;line-height:1.55;font-weight:650}
+.moves{display:flex;gap:5px}
+.move{
+ width:31px;height:31px;border-radius:9px;
+ background:white;color:var(--blue);border:1px solid #dce5fa;font-weight:900;
+}
+.move:disabled{opacity:.25}
+.action-row{display:flex;gap:9px;margin-top:18px}
+.action-row button{flex:1}
+.feedback{
+ margin-top:17px;padding:16px;border-radius:15px;
+ font-size:13px;line-height:1.7;
+}
+.feedback.good{background:#e4fff4;border:1px solid #a4ebce;color:#087c55}
+.feedback.bad{background:#fff0f4;border:1px solid #ffc0d1;color:#b63860}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.badge{
+ padding:10px 12px;border-radius:12px;
+ background:#f0f3f9;border:1px solid #e1e7f1;
+ color:#9aa5b9;font-size:11px;font-weight:800;
+}
+.badge.earned{color:#8a5900;border-color:#ffdb80;background:#fff5d9}
+.result{text-align:center}
+.result-score{font-size:68px;font-weight:950;color:var(--blue);margin:12px}
+.result-icon{font-size:70px}
+.result-row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);font-size:13px}
+.result-row strong{text-align:right;overflow-wrap:anywhere}
+.review{text-align:left;margin-top:22px}
+.review-item{padding:14px 0;border-bottom:1px solid var(--border);font-size:12px;line-height:1.7}
+.review-item strong{color:var(--blue)}
+.review-item .wrong{color:#e64f7b}
+@media(max-width:520px){
+ .wrapper{padding:15px 12px 28px}
+ .panel{padding:17px}
+ .hero{padding:23px 5px 18px}
+ .emoji{font-size:57px}
+ .question{font-size:18px}
+ .sort-item{padding:10px;gap:7px}
+ .item-text{font-size:12px}
+ .move{width:29px;height:29px}
+ .action-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+ <div class="topbar">
+  <div class="brand">YUMMY CHOICE • RTE ACADEMY</div>
+  <button class="sound" id="soundBtn" onclick="toggleMusic()">♫ MUSIC: OFF</button>
+ </div>
+
+ <header class="hero">
+  <div class="emoji">🍙</div>
+  <div class="eyebrow">OPERATIONAL SKILL CHALLENGE</div>
+  <h1>ONIGIRI <span>MISSION</span></h1>
+  <div class="subtitle">The Perfect Service Sequence<br>Susun urutannya. Kuasai pelayanannya.</div>
+ </header>
+
+ <section id="gateway" class="panel">
+  <h2 class="section-title">🚀 Welcome, Future Onigiri Expert!</h2>
+  <p class="small">Sebelum menjalankan misi, identifikasi dirimu terlebih dahulu.</p>
+  <div class="field">
+   <label>NAMA LENGKAP</label>
+   <input id="name" placeholder="Masukkan nama lengkap">
+  </div>
+  <div class="field">
+   <label>NOMOR HP</label>
+   <input id="phone" type="tel" inputmode="numeric" placeholder="Contoh: 081234567890" maxlength="16">
+  </div>
+
+  <div class="why">
+   <strong>⚡ MISSION HOOK: WHY?</strong><br>
+   Produk yang berkualitas saja belum cukup. Cara kita menampilkan, menyiapkan, dan menawarkan Onigiri dapat menentukan pengalaman pelanggan.
+   <br><br><strong>Siap membuktikan bahwa kamu menguasai setiap urutannya?</strong>
+  </div>
+
+  <h3>🎯 Mission Objective</h3>
+  <p class="small">Selesaikan 10 tantangan untuk menguasai informasi display, penanganan produk, persiapan tester, dan urutan penawaran Onigiri kepada pelanggan.</p>
+  <h3>📜 Mission Rules</h3>
+  <ol class="rules">
+   <li>Terdapat 10 tantangan sequencing.</li>
+   <li>Susun setiap tahapan ke dalam urutan yang benar.</li>
+   <li>Jawaban benar mendapatkan <b>+10 poin</b>.</li>
+   <li>Jawaban salah mendapatkan <b>-2 poin</b>.</li>
+   <li>Setiap tantangan hanya dapat dikonfirmasi satu kali.</li>
+   <li>Kumpulkan badge dan raih skor terbaikmu!</li>
+  </ol>
+  <button class="btn full" onclick="startGame()">I'M READY — START MISSION →</button>
+ </section>
+
+ <section id="game" class="hidden">
+  <div class="hud">
+   <div class="stat"><strong id="score">0</strong><span>MY POINTS</span></div>
+   <div class="stat"><strong id="done">0/10</strong><span>COMPLETED</span></div>
+   <div class="stat"><strong id="streak">0</strong><span>BEST STREAK</span></div>
+  </div>
+  <div class="progress-wrap">
+   <div class="progress-head"><span>MISSION PROGRESS</span><strong id="percent">0%</strong></div>
+   <div class="progress"><div class="bar" id="bar"></div></div>
+  </div>
+
+  <div class="panel">
+   <div class="level">
+    <span class="level-tag" id="level">LEVEL 01</span>
+    <span class="q-number" id="qNumber">QUESTION 1 / 10</span>
+   </div>
+   <div class="question" id="question"></div>
+   <div class="hint" id="hint"></div>
+   <div class="instruction">↕ SUSUN URUTAN DARI PALING ATAS KE PALING BAWAH</div>
+   <div class="sort-list" id="sortList"></div>
+   <div class="action-row">
+    <button class="btn secondary" id="resetBtn" onclick="resetOrder()">↻ Acak Ulang</button>
+    <button class="btn" id="checkBtn" onclick="checkAnswer()">CHECK ANSWER ✓</button>
+   </div>
+   <div id="feedback" class="feedback hidden"></div>
+   <button id="nextBtn" class="btn pink full hidden" onclick="nextQuestion()">NEXT MISSION →</button>
+  </div>
+
+  <div class="panel" style="margin-top:15px">
+   <strong>🏅 MY ACHIEVEMENTS</strong>
+   <div class="badges">
+    <div class="badge" id="badge3">🔰 First Steps · 3 missions</div>
+    <div class="badge" id="badge6">⚡ Service Pro · 6 missions</div>
+    <div class="badge" id="badge10">🏆 Onigiri Master · 10 missions</div>
+   </div>
+  </div>
+ </section>
+
+ <section id="result" class="panel hidden result">
+  <div class="result-icon" id="resultIcon">🏆</div>
+  <div class="eyebrow">MISSION COMPLETED</div>
+  <h2 id="resultTitle">Amazing Work!</h2>
+  <p class="small" id="resultMessage"></p>
+  <div class="result-score" id="finalScore">0</div>
+  <div class="small">TOTAL POINTS</div>
+  <div style="margin-top:20px;text-align:left">
+   <div class="result-row"><span>Peserta</span><strong id="finalName"></strong></div>
+   <div class="result-row"><span>Nomor HP</span><strong id="finalPhone"></strong></div>
+   <div class="result-row"><span>Jawaban benar</span><strong id="finalCorrect"></strong></div>
+   <div class="result-row"><span>Akurasi</span><strong id="finalAccuracy"></strong></div>
+   <div class="result-row"><span>Badge diperoleh</span><strong id="finalBadge"></strong></div>
+   <div class="result-row"><span>Status</span><strong id="finalStatus"></strong></div>
+  </div>
+  <div class="review">
+   <h3>📋 MISSION DEBRIEF</h3>
+   <p class="small">Evaluasi jawaban dan pelajari kembali bagian yang perlu ditingkatkan.</p>
+   <div id="reviewList"></div>
+  </div>
+  <div class="why" id="reinforcement"></div>
+  <button class="btn full" onclick="location.reload()">↻ PLAY AGAIN</button>
+  <button class="btn secondary full" onclick="downloadResult()">↓ DOWNLOAD HASIL (.CSV)</button>
+ </section>
+
+ <div class="footer">Education &amp; Training Dept. © 2026</div>
+</div>
+
+<script>
+const questions = [
+{
+level:"LEVEL 01 • PRODUCT DISPLAY",
+title:"Bagaimana urutan informasi display Onigiri yang benar?",
+hint:"Petunjuk: Perhatikan produk, kondisi suhu, sarana display, dan masa expired.",
+items:["Onigiri","Didisplay pada suhu ruang","Menggunakan sarana akrilik","Masa expired 1 hari"],
+explain:"Onigiri didisplay pada suhu ruang menggunakan sarana akrilik, dengan masa expired 1 hari."
+},
+{
+level:"LEVEL 01 • PRODUCT DISPLAY",
+title:"Susun informasi display Onigiri menjadi satu prosedur yang utuh!",
+hint:"Petunjuk: Mulai dari identifikasi produk hingga informasi masa expired.",
+items:["Identifikasi produk Onigiri","Tempatkan pada suhu ruang","Gunakan sarana akrilik untuk display","Perhatikan masa expired 1 hari"],
+explain:"Informasi utama display yang perlu dikuasai adalah produk Onigiri, suhu ruang, sarana akrilik, dan masa expired 1 hari."
+},
+{
+level:"LEVEL 02 • PRODUCT HANDLING",
+title:"Pelanggan menginginkan Onigiri dalam kondisi hangat. Bagaimana urutannya?",
+hint:"Petunjuk: Pemanasan dilakukan apabila konsumen menginginkannya.",
+items:["Konsumen menginginkan Onigiri dipanaskan","Panaskan menggunakan microwave","Lakukan pemanasan selama 30 detik"],
+explain:"Onigiri tidak dipanaskan secara default. Apabila konsumen menginginkannya, panaskan menggunakan microwave selama 30 detik."
+},
+{
+level:"LEVEL 02 • PRODUCT HANDLING",
+title:"Susun tahapan pemanasan Onigiri berdasarkan permintaan pelanggan!",
+hint:"Petunjuk: Ingat kondisi yang menjadi syarat pemanasan.",
+items:["Pastikan ada permintaan dari konsumen","Siapkan Onigiri untuk dipanaskan","Gunakan microwave","Panaskan selama 30 detik"],
+explain:"Pemanasan dilakukan apabila konsumen menginginkannya, menggunakan microwave selama 30 detik."
+},
+{
+level:"LEVEL 03 • PRODUCT SAMPLING",
+title:"Bagaimana cara menyiapkan tester Onigiri?",
+hint:"Petunjuk: Perhatikan jumlah potongan dan wadah tester.",
+items:["Siapkan produk Onigiri","Bagi menjadi 4 bagian","Masukkan ke dalam cup icip-icip"],
+explain:"Penawaran tester dilakukan dengan membagi Onigiri menjadi 4 bagian, kemudian memasukkannya ke dalam cup icip-icip."
+},
+{
+level:"LEVEL 03 • PRODUCT SAMPLING",
+title:"Susun prosedur penyajian cup icip-icip Onigiri!",
+hint:"Petunjuk: Urutkan mulai dari produk utuh sampai siap ditawarkan.",
+items:["Ambil produk Onigiri","Potong menjadi 4 bagian","Masukkan potongan ke dalam cup icip-icip"],
+explain:"Tester Onigiri dibagi menjadi 4 bagian dan dimasukkan ke dalam cup icip-icip."
+},
+{
+level:"LEVEL 04 • CUSTOMER SERVICE",
+title:"Bagaimana memulai penawaran produk kepada pelanggan?",
+hint:"Petunjuk: Awali interaksi dengan sikap yang sopan.",
+items:["Salam pembuka","Mohon maaf mengganggu waktunya","Kenalkan dan tawarkan produk serta variannya"],
+explain:"Penawaran diawali dengan salam pembuka, permohonan maaf, kemudian memperkenalkan produk dan variannya."
+},
+{
+level:"LEVEL 04 • CUSTOMER SERVICE",
+title:"Setelah memperkenalkan produk, bagaimana melanjutkan penawaran?",
+hint:"Petunjuk: Berikan kesempatan pelanggan mengenal produk melalui tester dan informasi promo.",
+items:["Kenalkan dan tawarkan produk serta variannya","Tawarkan tester / icip-icip","Informasikan promo yang sedang berlangsung"],
+explain:"Setelah memperkenalkan produk dan variannya, tawarkan tester, kemudian sampaikan informasi promo yang sedang berlangsung."
+},
+{
+level:"LEVEL 04 • CUSTOMER SERVICE",
+title:"Bagaimana tahapan akhir dalam proses penawaran?",
+hint:"Petunjuk: Bantu pelanggan menyelesaikan proses pembelian dengan baik.",
+items:["Informasikan promo yang sedang berlangsung","Arahkan pelanggan untuk transaksi di kasir","Ucapkan terima kasih"],
+explain:"Setelah menyampaikan promo, arahkan pelanggan untuk bertransaksi di kasir dan tutup interaksi dengan ucapan terima kasih."
+},
+{
+level:"FINAL BOSS • COMPLETE SERVICE",
+title:"FINAL BOSS! Susun seluruh alur penawaran Onigiri dari awal sampai akhir!",
+hint:"Petunjuk: Ini tantangan pamungkas. Ingat seluruh urutan pelayanan!",
+items:[
+"Salam pembuka",
+"Mohon maaf mengganggu waktunya",
+"Kenalkan dan tawarkan produk serta variannya",
+"Tawarkan tester / icip-icip",
+"Informasikan promo yang sedang berlangsung",
+"Arahkan pelanggan untuk transaksi di kasir",
+"Ucapkan terima kasih"
+],
+explain:"Urutan lengkap: salam pembuka → mohon maaf mengganggu waktunya → kenalkan dan tawarkan produk serta variannya → tawarkan tester → informasikan promo → arahkan ke kasir → ucapkan terima kasih."
+}
+];
+
+let current=0,score=0,correct=0,streak=0,bestStreak=0;
+let order=[],results=[],answered=false;
+let audioCtx=null,musicTimer=null,musicOn=false;
+let dragSource=null;
+let participant={name:"",phone:""};
+
+function shuffle(arr){
+ let a=[...arr];
+ for(let i=a.length-1;i>0;i--){
+  let j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
+ }
+ return a;
+}
+
+function startGame(){
+ const name=document.getElementById("name").value.trim();
+ const phone=document.getElementById("phone").value.trim();
+ if(!name||!phone){
+  alert("Lengkapi Nama dan Nomor HP terlebih dahulu!");
+  return;
+ }
+ if(!/^\+?[0-9\s-]{9,16}$/.test(phone)){
+  alert("Masukkan nomor HP yang valid!");
+  return;
+ }
+ participant={name,phone};
+ document.getElementById("gateway").classList.add("hidden");
+ document.getElementById("game").classList.remove("hidden");
+ renderQuestion();
+}
+
+function renderQuestion(){
+ answered=false;
+ const q=questions[current];
+ order=shuffle(q.items);
+ document.getElementById("level").textContent=q.level;
+ document.getElementById("qNumber").textContent=`QUESTION ${current+1} / 10`;
+ document.getElementById("question").textContent=q.title;
+ document.getElementById("hint").textContent="💡 "+q.hint;
+ document.getElementById("feedback").className="feedback hidden";
+ document.getElementById("nextBtn").classList.add("hidden");
+ document.getElementById("checkBtn").disabled=false;
+ document.getElementById("resetBtn").disabled=false;
+ renderList();
+ updateHUD();
+}
+
+function renderList(){
+ const list=document.getElementById("sortList");
+ list.innerHTML="";
+ order.forEach((item,i)=>{
+  const div=document.createElement("div");
+  div.className="sort-item";
+  div.draggable=!answered;
+  const number=document.createElement("span");
+  number.className="num";
+  number.textContent=i+1;
+  const text=document.createElement("span");
+  text.className="item-text";
+  text.textContent=item;
+  const moves=document.createElement("div");
+  moves.className="moves";
+
+  const up=document.createElement("button");
+  up.className="move";up.textContent="↑";
+  up.disabled=answered||i===0;
+  up.onclick=()=>moveItem(i,-1);
+
+  const down=document.createElement("button");
+  down.className="move";down.textContent="↓";
+  down.disabled=answered||i===order.length-1;
+  down.onclick=()=>moveItem(i,1);
+
+  moves.append(up,down);
+  div.append(number,text,moves);
+
+  div.addEventListener("dragstart",e=>{
+   if(answered){e.preventDefault();return}
+   dragSource=i;
+   div.classList.add("dragging");
+   e.dataTransfer.effectAllowed="move";
+  });
+  div.addEventListener("dragend",()=>{
+   div.classList.remove("dragging");
+  });
+  div.addEventListener("dragover",e=>{
+   e.preventDefault();div.classList.add("over");
+  });
+  div.addEventListener("dragleave",()=>{
+   div.classList.remove("over");
+  });
+  div.addEventListener("drop",e=>{
+   e.preventDefault();div.classList.remove("over");
+   if(dragSource!==null&&dragSource!==i){
+    const moved=order.splice(dragSource,1)[0];
+    order.splice(i,0,moved);
+    renderList();
+   }
+   dragSource=null;
+  });
+  list.appendChild(div);
+ });
+}
+
+function moveItem(i,dir){
+ if(answered)return;
+ const j=i+dir;
+ if(j<0||j>=order.length)return;
+ [order[i],order[j]]=[order[j],order[i]];
+ renderList();
+}
+
+function resetOrder(){
+ if(answered)return;
+ order=shuffle(questions[current].items);
+ renderList();
+}
+
+function checkAnswer(){
+ if(answered)return;
+ const q=questions[current];
+ const isCorrect=order.every((item,i)=>item===q.items[i]);
+ answered=true;
+
+ if(isCorrect){
+  score+=10;correct++;streak++;
+  bestStreak=Math.max(streak,bestStreak);
+  playSfx("correct");
+ }else{
+  score=Math.max(0,score-2);streak=0;
+  playSfx("wrong");
+ }
+
+ results.push({
+  number:current+1,correct:isCorrect,
+  chosen:[...order],explain:q.explain,expected:[...q.items]
+ });
+
+ const fb=document.getElementById("feedback");
+ fb.className="feedback "+(isCorrect?"good":"bad");
+ fb.innerHTML=isCorrect
+  ?"<strong>🎉 PERFECT SEQUENCE! +10 POINTS</strong><br>Hebat! Urutan kamu sudah benar. Pertahankan konsistensimu!"
+  :"<strong>💡 NOT QUITE! -2 POINTS</strong><br>Jangan menyerah. Pelajari kembali urutan yang benar:";
+
+ const explanation=document.createElement("div");
+ explanation.style.marginTop="8px";
+ explanation.textContent=q.explain;
+ fb.appendChild(explanation);
+
+ document.getElementById("checkBtn").disabled=true;
+ document.getElementById("resetBtn").disabled=true;
+ document.getElementById("nextBtn").classList.remove("hidden");
+
+ updateHUD();
+ updateBadges();
+}
+
+function updateHUD(){
+ const completed=results.length;
+ const percent=completed*10;
+ document.getElementById("score").textContent=score;
+ document.getElementById("done").textContent=completed+"/10";
+ document.getElementById("streak").textContent=bestStreak;
+ document.getElementById("percent").textContent=percent+"%";
+ document.getElementById("bar").style.width=percent+"%";
+}
+
+function updateBadges(){
+ const n=results.length;
+ if(n>=3)document.getElementById("badge3").classList.add("earned");
+ if(n>=6)document.getElementById("badge6").classList.add("earned");
+ if(n>=10)document.getElementById("badge10").classList.add("earned");
+}
+
+function nextQuestion(){
+ if(current<questions.length-1){
+  current++;
+  renderQuestion();
+ }else showResult();
+}
+
+function showResult(){
+ document.getElementById("game").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+
+ const accuracy=Math.round(correct/10*100);
+ const status=accuracy>=80?"COMPETENT":accuracy>=60?"DEVELOPING":"NEEDS IMPROVEMENT";
+
+ document.getElementById("finalName").textContent=participant.name;
+ document.getElementById("finalPhone").textContent=participant.phone;
+ document.getElementById("finalScore").textContent=score;
+ document.getElementById("finalCorrect").textContent=correct+" / 10";
+ document.getElementById("finalAccuracy").textContent=accuracy+"%";
+ document.getElementById("finalBadge").textContent=results.length>=10?"3 badges":results.length>=6?"2 badges":results.length>=3?"1 badge":"0 badge";
+ document.getElementById("finalStatus").textContent=status;
+
+ let icon,title,message;
+ if(accuracy>=80){
+  icon="🏆";title="ONIGIRI MASTER!";
+  message="Luar biasa! Kamu menunjukkan penguasaan materi yang sangat baik. Pertahankan standar pelayananmu!";
+ }else if(accuracy>=60){
+  icon="⚡";title="KEEP LEVELING UP!";
+  message="Kamu sudah berada di jalur yang tepat. Ulangi bagian yang belum tepat dan terus tingkatkan kemampuanmu!";
+ }else{
+  icon="🌱";title="EVERY EXPERT STARTS SOMEWHERE!";
+  message="Tidak masalah jika belum sempurna. Pelajari kembali materi, pahami urutannya, dan coba lagi. Kamu pasti bisa!";
+ }
+
+ document.getElementById("resultIcon").textContent=icon;
+ document.getElementById("resultTitle").textContent=title;
+ document.getElementById("resultMessage").textContent=message;
+
+ document.getElementById("reinforcement").textContent=accuracy>=80
+ ?"✨ MISSION ACCOMPLISHED! Terus terapkan standar display, handling, tester, dan pelayanan dalam aktivitas operasional."
+ :"💪 KEEP GOING! Kesempatan untuk belajar selalu terbuka. Review jawabanmu dan bangun kebiasaan pelayanan yang lebih baik.";
+
+ const review=document.getElementById("reviewList");
+ review.innerHTML="";
+
+ results.forEach(r=>{
+  const div=document.createElement("div");
+  div.className="review-item";
+
+  const title=document.createElement("strong");
+  title.textContent="Mission "+r.number+" — "+(r.correct?"✓ BENAR":"✗ PERLU DIPERBAIKI");
+
+  const detail=document.createElement("div");
+  detail.className=r.correct?"":"wrong";
+  detail.textContent=r.correct?"Urutan sudah tepat.":"Urutan jawaban belum tepat.";
+
+  const explanation=document.createElement("div");
+  explanation.textContent="Kunci: "+r.expected.join(" → ");
+
+  const note=document.createElement("div");
+  note.style.color="#667596";
+  note.style.marginTop="5px";
+  note.textContent=r.explain;
+
+  div.append(title,detail,explanation,note);
+  review.appendChild(div);
+ });
+ playSfx("win");
+}
+
+function downloadResult(){
+ const rows=[
+ ["Nama","Nomor HP","Skor","Jawaban Benar","Akurasi","Jumlah Mission","Status"],
+ [participant.name,participant.phone,score,correct,correct*10+"%","10",correct>=8?"COMPETENT":correct>=6?"DEVELOPING":"NEEDS IMPROVEMENT"],
+ [],
+ ["Nomor","Status","Jawaban Peserta","Kunci Jawaban","Feedback"]
+ ];
+
+ results.forEach(r=>rows.push([
+  r.number,r.correct?"Benar":"Salah",
+  r.chosen.join(" | "),r.expected.join(" | "),r.explain
+ ]));
+
+ const csv=rows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);
+ a.download="Hasil_Onigiri_Mission_"+participant.phone+".csv";
+ a.click();
+ URL.revokeObjectURL(a.href);
+}
+
+// WEB AUDIO API
+function initAudio(){
+ if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+ if(audioCtx.state==="suspended")audioCtx.resume();
+}
+
+function tone(freq,duration,type="sine",volume=.06,delay=0){
+ if(!audioCtx)return;
+ const osc=audioCtx.createOscillator();
+ const gain=audioCtx.createGain();
+ osc.type=type;
+ osc.frequency.value=freq;
+ gain.gain.setValueAtTime(0,audioCtx.currentTime+delay);
+ gain.gain.linearRampToValueAtTime(volume,audioCtx.currentTime+delay+.025);
+ gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+delay+duration);
+ osc.connect(gain);
+ gain.connect(audioCtx.destination);
+ osc.start(audioCtx.currentTime+delay);
+ osc.stop(audioCtx.currentTime+delay+duration+.03);
+}
+
+function startMusic(){
+ if(musicTimer)clearInterval(musicTimer);
+ const melody=[392,494,587,494,440,523,659,523];
+ let i=0;
+ musicTimer=setInterval(()=>{
+  if(musicOn){
+   tone(melody[i%melody.length],.22,"triangle",.018);
+   i++;
+  }
+ },260);
+}
+
+function toggleMusic(){
+ initAudio();
+ musicOn=!musicOn;
+ document.getElementById("soundBtn").textContent="♫ MUSIC: "+(musicOn?"ON":"OFF");
+ if(!musicTimer)startMusic();
+}
+
+function playSfx(type){
+ initAudio();
+ if(type==="correct"){
+  tone(523,.15,"sine",.09);
+  tone(659,.18,"sine",.08,.12);
+  tone(784,.28,"sine",.08,.24);
+ }else if(type==="wrong"){
+  tone(240,.22,"sawtooth",.045);
+  tone(185,.3,"sawtooth",.04,.16);
+ }else{
+  tone(523,.2,"triangle",.08);
+  tone(659,.2,"triangle",.08,.14);
+  tone(784,.25,"triangle",.08,.28);
+  tone(1046,.4,"sine",.08,.42);
+ }
+}
+</script>
+</body>
+</html>
